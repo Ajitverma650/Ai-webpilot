@@ -1,4 +1,4 @@
-// App.js
+/// src/App.js
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header';
@@ -12,9 +12,9 @@ import usePromptHistory from './hooks/usePromptHistory';
 import { downloadProject, runProjectInNewTab } from './utils/fileUtils';
 
 function App() {
-  const [showPreview, setShowPreview] = useState(false); // Start with code view
+  const [showPreview, setShowPreview] = useState(false);
   const [showToggleNotification, setShowToggleNotification] = useState(false);
-  const [showPublishPanel, setShowPublishPanel] = useState(false); // State for publish panel
+  const [showPublishPanel, setShowPublishPanel] = useState(false);
   
   const { files, activeFile, setActiveFile, setFiles } = useFileManager();
   const { generateCode, isLoading } = useAIGenerator();
@@ -26,13 +26,11 @@ function App() {
     selectFromHistory
   } = usePromptHistory();
 
-  // Add keyboard shortcut for toggle (Cmd/Ctrl + K)
   useEffect(() => {
     const handleKeyDown = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
         event.preventDefault();
         setShowPreview(prev => !prev);
-        // Show notification briefly
         setShowToggleNotification(true);
         setTimeout(() => setShowToggleNotification(false), 1500);
       }
@@ -44,10 +42,7 @@ function App() {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
-    
-    // Add to history and clear prompt
     addToHistory(prompt);
-    
     const newFiles = await generateCode(prompt);
     if (newFiles) {
       setFiles(newFiles);
@@ -69,35 +64,18 @@ function App() {
   return (
     <div style={{ 
       height: '100vh', 
-      background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)',
-      color: '#ffffff',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      background: '#111827',
+      color: '#F9FAFB',
+      fontFamily: "'Inter', sans-serif",
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      position: 'relative'
     }}>
-      {/* Animated Background */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: `
-          radial-gradient(circle at 20% 80%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-          radial-gradient(circle at 40% 40%, rgba(79, 70, 229, 0.1) 0%, transparent 50%)
-        `,
-        animation: 'gradientShift 8s ease infinite'
-      }}></div>
-      
       <Header 
         showPreview={showPreview}
         setShowPreview={setShowPreview}
         onRunProject={handleRunProject}
         onDownloadProject={handleDownloadProject}
-        files={files}
         showPublishPanel={showPublishPanel}
         setShowPublishPanel={setShowPublishPanel}
       />
@@ -105,10 +83,7 @@ function App() {
       <div style={{ 
         display: 'flex', 
         flex: 1,
-        overflow: 'hidden',
-        position: 'relative',
-        zIndex: 1,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        overflow: 'hidden'
       }}>
         <PromptPanel 
           prompt={prompt}
@@ -122,20 +97,20 @@ function App() {
           onSelectFromHistory={handleSelectFromHistory}
         />
         
-        <CodeEditor 
-          files={files}
-          activeFile={activeFile}
-          setFiles={setFiles}
-          showPreview={showPreview}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+          <CodeEditor 
+            files={files}
+            activeFile={activeFile}
+            setFiles={setFiles}
+            showPreview={showPreview}
+          />
+          <PreviewPanel 
+            files={files}
+            onRunProject={handleRunProject}
+            showPreview={showPreview}
+          />
+        </div>
         
-        <PreviewPanel 
-          files={files}
-          onRunProject={handleRunProject}
-          showPreview={showPreview}
-        />
-        
-        {/* Publish Panel - Slides in from right */}
         <PublishPanel 
           files={files}
           projectName="AI Generated Project"
@@ -144,28 +119,22 @@ function App() {
         />
       </div>
 
-      {/* Toggle notification */}
       {showToggleNotification && (
         <div style={{
           position: 'fixed',
           top: '80px',
           right: '20px',
-          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.95) 0%, rgba(236, 72, 153, 0.95) 100%)',
-          color: 'white',
+          background: '#1F2937',
+          color: '#F9FAFB',
           padding: '12px 20px',
-          borderRadius: '12px',
+          borderRadius: '8px',
           fontSize: '14px',
-          fontWeight: '600',
+          fontWeight: '500',
           zIndex: 1000,
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.2)',
-          boxShadow: '0 8px 32px rgba(168, 85, 247, 0.3)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
           animation: 'slideInRight 0.3s ease-out',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
         }}>
-          <span>{showPreview ? '👁️' : '💻'}</span>
           Switched to {showPreview ? 'Preview' : 'Code'} mode
         </div>
       )}
