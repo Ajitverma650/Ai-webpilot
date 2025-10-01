@@ -1,4 +1,4 @@
-// controllers/generateController.js
+
 const model = require('../config/genai');
 const validateAndFixFiles = require('../utils/validateFiles');
 

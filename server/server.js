@@ -8,7 +8,7 @@ const generateRoute = require('./routes/generateRoute');
 const publishRoutes = require('./routes/publishRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 
-app.use(cors);
+app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/generate', generateRoute);
