@@ -1,25 +1,23 @@
-const cors = require('cors');
+import cors from 'cors';
 
 const allowedOrigins = [
-  'http://localhost:3000',
-  /\.vercel\.app$/   // Regex: allow any subdomain of vercel.app
+    'http://localhost:3000', // <-- I've added this line
+    'http://localhost:5000',
+    'https://ai-webpilot.vercel.app'
 ];
 
-module.exports = cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // allow non-browser requests like Postman
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    optionsSuccessStatus: 200
+};
 
-    if (
-      allowedOrigins.some(o =>
-        o instanceof RegExp ? o.test(origin) : o === origin
-      )
-    ) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS: ' + origin));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-});
+const corsMiddleware = cors(corsOptions);
+
+export default corsMiddleware;
