@@ -3,13 +3,14 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-const cors = require('./middleware/corsConfig'); // imports your custom cors config
+const corsMiddleware = require('./middleware/corsConfig'); // use the middleware properly
+
 const generateRoute = require('./routes/generateRoute');
 const publishRoutes = require('./routes/publishRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+app.use(corsMiddleware);
 
-// 👇 Call the middleware (not just pass reference)
-app.use(cors);
+
 app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/generate', generateRoute);

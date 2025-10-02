@@ -1,7 +1,9 @@
-import cors from 'cors';
+
+
+const cors = require('cors');
 
 const allowedOrigins = [
-    'http://localhost:3000', // <-- I've added this line
+    'http://localhost:3000',
     'http://localhost:5000',
     'https://ai-webpilot.vercel.app'
 ];
@@ -20,4 +22,4 @@ const corsOptions = {
 
 const corsMiddleware = cors(corsOptions);
 
-export default corsMiddleware;
+module.exports = corsMiddleware;
